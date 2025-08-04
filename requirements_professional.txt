@@ -1,0 +1,35 @@
+# Core AI/ML Dependencies
+gradio>=4.0.0
+ultralytics>=8.0.0
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Computer Vision & Image Processing
+opencv-python>=4.8.0
+Pillow>=10.0.0
+numpy>=1.24.0
+
+# Data Analysis & Visualization
+pandas>=2.0.0
+plotly>=5.17.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Professional Features
+python-dateutil>=2.8.0
+scikit-learn>=1.3.0
+
+# Performance & Optimization
+numba>=0.58.0
+
+# Development & Debugging (optional)
+ipython>=8.0.0
+jupyter>=1.0.0
+
+# Export & Reporting
+jinja2>=3.1.0
+weasyprint>=60.0.0
+
+# Additional utilities
+tqdm>=4.65.0
+psutil>=5.9.0
