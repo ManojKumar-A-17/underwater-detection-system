@@ -118,6 +118,7 @@ The application uses the default COCO dataset classes. To customize for specific
 ## 🌐 Deployment
 
 ### Local Deployment
+Use Render and other web services to deploy this 
 ```bash
 python app.py
 ```
@@ -164,4 +165,3 @@ For questions or support, please open an issue on GitHub.
 Some predicted images are added.
 
 
-**Made with ❤️ for underwater research and marine conservation** 
