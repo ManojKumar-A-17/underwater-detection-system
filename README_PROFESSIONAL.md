@@ -191,6 +191,9 @@ docker run -p 7860:7860 underwater-detection-pro
 | YOLOv8n | ~45ms | 22 FPS | 0.86 | 3.2M |
 | YOLOv8s | ~65ms | 15 FPS | 0.89 | 11.2M |
 
+if your computer/laptop didn't have GPU , you may use CPU for this.
+But, your accuray is too low.
+
 *Benchmarks on RTX 3080, varies by hardware*
 
 ## 📤 Export & Reporting Features
@@ -286,3 +289,4 @@ For enterprise support, custom training, or professional consulting:
 ---
 
 **🐬 Built for Marine Research & Conservation** | **🚀 Production-Ready AI Solution** | **📊 Professional Analytics Platform**
+
