@@ -1,35 +1,35 @@
-# 🐬 Professional Underwater Object Detection System
+#  Professional Underwater Object Detection System
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Gradio](https://img.shields.io/badge/UI-Gradio-orange)](https://gradio.app/)
 [![YOLOv8](https://img.shields.io/badge/Model-YOLOv8-green)](https://github.com/ultralytics/ultralytics)
 
-## 🌟 Professional Features
+## Professional Features
 
 An enterprise-grade underwater object detection system built with advanced AI capabilities and professional-grade user interface. This system provides comprehensive analytics, multi-model comparison, and production-ready deployment options.
 
-### ✨ **Key Professional Features**
+###  **Key Professional Features**
 
-🎯 **Advanced Detection Engine**
+ **Advanced Detection Engine**
 - Multi-model comparison (YOLOv8n vs YOLOv8s)
 - Real-time confidence and IoU threshold adjustment
 - Professional visualization with color-coded classes
 - Batch processing capabilities
 
-📊 **Professional Analytics**
+ **Professional Analytics**
 - Detection statistics and performance metrics
 - Real-time charts and visualizations
 - Session analytics and history tracking
 - Comprehensive reporting system
 
-🎨 **Enterprise UI/UX**
+ **Enterprise UI/UX**
 - Modern, responsive professional interface
 - Dark/Light mode support
 - Advanced control panels
 - Interactive charts and graphs
 
-📤 **Export & Reporting**
+ **Export & Reporting**
 - JSON, CSV, and HTML export formats
 - Professional PDF reports
 - Detection history management
@@ -41,21 +41,21 @@ An enterprise-grade underwater object detection system built with advanced AI ca
 - System diagnostics and health checks
 - GPU acceleration support
 
-## 🎯 Supported Marine Life Detection
+##  Supported Marine Life Detection
 
 The system can detect **7 specific underwater objects** with high accuracy:
 
-| Object | Emoji | Color | Description |
-|--------|-------|--------|-------------|
-| **Fish** | 🐠 | `#FF6B6B` | Various fish species |
-| **Jellyfish** | 🪼 | `#4ECDC4` | Jellyfish and cnidarians |
-| **Penguin** | 🐧 | `#45B7D1` | Penguin species |
-| **Puffin** | 🦅 | `#96CEB4` | Puffin seabirds |
-| **Shark** | 🦈 | `#FECA57` | Shark species |
-| **Starfish** | ⭐ | `#FF9FF3` | Sea stars and echinoderms |
-| **Stingray** | 🐙 | `#54A0FF` | Stingrays and rays |
+| **Object**    | **Color** | **Description**           |
+| ------------- | --------- | ------------------------- |
+| **Fish**      | `#FF6B6B` | Various fish species      |
+| **Jellyfish** | `#4ECDC4` | Jellyfish and cnidarians  |
+| **Penguin**   | `#45B7D1` | Penguin species           |
+| **Puffin**    | `#96CEB4` | Puffin seabirds           |
+| **Shark**     | `#FECA57` | Shark species             |
+| **Starfish**  | `#FF9FF3` | Sea stars and echinoderms |
+| **Stingray**  | `#54A0FF` | Stingrays and rays        |
 
-## 🚀 Quick Start Guide
+##  Quick Start Guide
 
 ### **Option 1: Professional Launcher (Recommended)**
 
@@ -80,7 +80,7 @@ python app.py
 python app_professional.py
 ```
 
-## 📋 System Requirements
+##  System Requirements
 
 ### **Minimum Requirements**
 - Python 3.8 or higher
@@ -118,7 +118,7 @@ psutil>=5.9.0
 jinja2>=3.1.0
 ```
 
-## 🎛️ Professional Interface Overview
+##  Professional Interface Overview
 
 ### **Main Dashboard**
 - **Header Section**: System status and key metrics
@@ -138,7 +138,7 @@ jinja2>=3.1.0
 - **Session History**: Track all detection activities
 - **Model Comparison**: Side-by-side performance analysis
 
-## 📊 Configuration Management
+##  Configuration Management
 
 The system uses professional configuration files for advanced customization:
 
@@ -162,7 +162,7 @@ The system uses professional configuration files for advanced customization:
 }
 ```
 
-## 🔧 Professional Deployment
+##  Professional Deployment
 
 ### **Local Development**
 ```bash
@@ -196,7 +196,7 @@ But, your accuray is too low.
 
 *Benchmarks on RTX 3080, varies by hardware*
 
-## 📤 Export & Reporting Features
+##  Export & Reporting Features
 
 ### **Detection Data Export**
 - **JSON**: Complete detection data with metadata
@@ -218,7 +218,7 @@ analytics.export_to_csv('my_detections.csv')
 "
 ```
 
-## 🛠️ Advanced Features
+##  Advanced Features
 
 ### **System Diagnostics**
 ```bash
@@ -238,7 +238,7 @@ python launch_professional.py --professional --skip-checks
 - Error tracking and debugging
 - Session activity logs
 
-## 🔍 API Integration (Future Release)
+##  API Integration (Future Release)
 
 ```python
 # Professional API endpoint (planned)
@@ -251,7 +251,7 @@ response = requests.post('http://localhost:7860/api/detect',
 results = response.json()
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions to enhance the professional features:
 
@@ -266,7 +266,7 @@ We welcome contributions to enhance the professional features:
 - Include unit tests for new features
 - Maintain backward compatibility
 
-## 📝 License & Credits
+##  License & Credits
 
 ### **License**
 This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
@@ -277,7 +277,7 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 - [Plotly](https://plotly.com/) - Advanced visualization library
 - Marine research community for dataset contributions
 
-## 📞 Professional Support
+##  Professional Support
 
 For enterprise support, custom training, or professional consulting:
 
@@ -289,4 +289,5 @@ For enterprise support, custom training, or professional consulting:
 ---
 
 **🐬 Built for Marine Research & Conservation** | **🚀 Production-Ready AI Solution** | **📊 Professional Analytics Platform**
+
 
