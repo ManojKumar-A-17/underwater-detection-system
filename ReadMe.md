@@ -1,294 +1,181 @@
-#  Professional Underwater Object Detection System
+# Underwater Object Detection with YOLOv8 + Gradio
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Gradio](https://img.shields.io/badge/UI-Gradio-orange)](https://gradio.app/)
-[![YOLOv8](https://img.shields.io/badge/Model-YOLOv8-green)](https://github.com/ultralytics/ultralytics)
+A web-based application for detecting underwater objects using YOLOv8 models. This project provides an interactive interface for real-time object detection in underwater images.
 
-## Professional Features
+## Features
 
-An enterprise-grade underwater object detection system built with advanced AI capabilities and professional-grade user interface. This system provides comprehensive analytics, multi-model comparison, and production-ready deployment options.
+- **Real-time Detection**: Upload images and get instant detection results
+- **Multi-Model Comparison**: Compare YOLOv8n and YOLOv8s models side-by-side
+- **Automatic Best Model Selection**: Automatically selects the best performing model
+- **Performance Metrics**: Shows mAP50 scores for each model
+- **Web Interface**: User-friendly Gradio web interface
+- **Underwater Optimized**: Designed for underwater object detection tasks
 
-###  **Key Professional Features**
+## Supported Object Classes
 
- **Advanced Detection Engine**
-- Multi-model comparison (YOLOv8n vs YOLOv8s)
-- Real-time confidence and IoU threshold adjustment
-- Professional visualization with color-coded classes
-- Batch processing capabilities
+The application can detect 7 specific underwater objects:
+- **Fish** 
+- **Jellyfish** 
+- **Penguin** 
+- **Puffin** 
+- **Shark** 
+- **Starfish** 
+- **Stingray** 
 
- **Professional Analytics**
-- Detection statistics and performance metrics
-- Real-time charts and visualizations
-- Session analytics and history tracking
-- Comprehensive reporting system
+*Note: This uses a custom-trained YOLOv8 model specifically for underwater detection.*
 
- **Enterprise UI/UX**
-- Modern, responsive professional interface
-- Dark/Light mode support
-- Advanced control panels
-- Interactive charts and graphs
+## Quick Start
 
- **Export & Reporting**
-- JSON, CSV, and HTML export formats
-- Professional PDF reports
-- Detection history management
-- Performance analytics export
+### Prerequisites
 
-**System Integration**
-- Professional configuration management
-- Advanced logging and monitoring
-- System diagnostics and health checks
-- GPU acceleration support
-
-##  Supported Marine Life Detection
-
-The system can detect **7 specific underwater objects** with high accuracy:
-
-| **Object**    | **Color** | **Description**           |
-| ------------- | --------- | ------------------------- |
-| **Fish**      | `#FF6B6B` | Various fish species      |
-| **Jellyfish** | `#4ECDC4` | Jellyfish and cnidarians  |
-| **Penguin**   | `#45B7D1` | Penguin species           |
-| **Puffin**    | `#96CEB4` | Puffin seabirds           |
-| **Shark**     | `#FECA57` | Shark species             |
-| **Starfish**  | `#FF9FF3` | Sea stars and echinoderms |
-| **Stingray**  | `#54A0FF` | Stingrays and rays        |
-
-##  Quick Start Guide
-
-### **Option 1: Professional Launcher (Recommended)**
-
-```bash
-# 1. Install dependencies
-pip install -r requirements_professional.txt
-
-# 2. Launch with system checks
-python launch_professional.py --professional
-
-# 3. Launch with custom settings
-python launch_professional.py --professional --port 8080 --gpu
-```
-
-### **Option 2: Direct Launch**
-
-```bash
-# Basic version
-python app.py
-
-# Professional version
-python app_professional.py
-```
-
-##  System Requirements
-
-### **Minimum Requirements**
 - Python 3.8 or higher
-- 4GB RAM (8GB+ recommended)
-- 2GB free disk space
-- Modern web browser
+- pip package manager
 
-### **Recommended Specifications**
-- Python 3.9+
-- 16GB RAM
-- NVIDIA GPU with CUDA support
-- SSD storage
-- High-speed internet connection
+### Installation
 
-### **Professional Dependencies**
-```bash
-# Core AI/ML
-gradio>=4.0.0
-ultralytics>=8.0.0
-torch>=2.0.0
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd underwater-detection-gradio
+   ```
 
-# Computer Vision
-opencv-python>=4.8.0
-Pillow>=10.0.0
-numpy>=1.24.0
+2. **Create virtual environment (recommended)**
+   ```bash
+   python -m venv venv
+   
+   # On Windows:
+   venv\Scripts\activate
+   
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
 
-# Analytics & Visualization
-pandas>=2.0.0
-plotly>=5.17.0
-matplotlib>=3.7.0
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# Professional Features
-scikit-learn>=1.3.0
-psutil>=5.9.0
-jinja2>=3.1.0
+4. **Train and update model (if needed)**
+   ```bash
+   python train_and_update.py
+   ```
+
+5. **Run the application**
+   ```bash
+   python app.py
+   ```
+
+5. **Open your browser**
+   Navigate to the URL shown in the terminal (usually `http://127.0.0.1:7860`)
+
+## Usage
+
+1. **Upload Image**: Click the upload area to select an underwater image
+2. **Select Model**: Choose between YOLOv8n (faster) or YOLOv8s (more accurate)
+3. **Get Results**: View the detection results with bounding boxes and labels
+
+## Technical Details
+
+### Models Used
+- **YOLOv8n**: Faster inference, good for real-time applications
+- **YOLOv8s**: Higher accuracy, better for precision-critical tasks
+- **Automatic Selection**: App automatically chooses the best performing model
+- **7 Classes**: fish, jellyfish, penguin, puffin, shark, starfish, stingray
+- **Performance Comparison**: Compare mAP50 scores between models
+
+### Dependencies
+- `gradio`: Web interface framework
+- `ultralytics`: YOLOv8 implementation
+- `opencv-python`: Computer vision operations
+- `Pillow`: Image processing
+- `torch`: PyTorch deep learning framework
+
+## Project Structure
+
+```
+underwater-detection-gradio/
+├── app.py              # Main Gradio application
+├── requirements.txt    # Python dependencies
+├── README.md          # This file
+├── venv/              # Virtual environment (created locally)
+└── examples/          # Example images (optional)
 ```
 
-##  Professional Interface Overview
+## Customization
 
-### **Main Dashboard**
-- **Header Section**: System status and key metrics
-- **Control Panel**: Advanced detection parameters
-- **Results Tabs**: Visual results, statistics, summary, history
-- **Analytics Panel**: Real-time performance charts
+### Adding Custom Models
+To use your own trained YOLOv8 models:
 
-### **Advanced Controls**
-- **Model Selection**: Choose between YOLOv8n/YOLOv8s models
-- **Confidence Threshold**: Adjust detection sensitivity (0.1-1.0)
-- **IoU Threshold**: Control overlap detection (0.1-1.0)
-- **Export Options**: Multiple format support
+1. Place your `.pt` model file in the project directory
+2. Update the model loading in `app.py`:
+   ```python
+   model_custom = YOLO("your_model.pt")
+   ```
 
-### **Professional Analytics**
-- **Detection Statistics**: Object count and distribution
-- **Performance Metrics**: Inference time and FPS
-- **Session History**: Track all detection activities
-- **Model Comparison**: Side-by-side performance analysis
+### Modifying Object Classes
+The application uses the default COCO dataset classes. To customize for specific underwater objects, train a custom YOLOv8 model on your dataset.
 
-##  Configuration Management
-
-The system uses professional configuration files for advanced customization:
-
-### **config_professional.json**
-```json
-{
-  "app_config": {
-    "title": "Professional Underwater Detection System",
-    "max_concurrent_users": 10,
-    "supported_formats": [".jpg", ".jpeg", ".png", ".bmp", ".tiff"]
-  },
-  "detection_config": {
-    "default_confidence_threshold": 0.25,
-    "max_detections_per_image": 100,
-    "enable_tracking": true
-  },
-  "performance_config": {
-    "enable_gpu_acceleration": true,
-    "optimize_for_mobile": false
-  }
-}
+## Deployment
+### Local (Windows)
+Use the professional UI with enhanced features:
+```powershell
+# optional: choose a port and sharing behavior
+$env:PORT = 7860
+$env:SERVER_NAME = "0.0.0.0"
+$env:GRADIO_SHARE = "false"
+python .\app_simple_professional.py
 ```
 
-##  Professional Deployment
-
-### **Local Development**
-```bash
-python launch_professional.py --professional --port 7860
+Or launch with the simple UI:
+```powershell
+python .\app.py
 ```
 
-### **Production Deployment**
-```bash
-# With GPU acceleration
-python launch_professional.py --professional --gpu --port 8080
-
-# Public sharing
-python launch_professional.py --professional --share
+### Docker
+Build and run the container:
+```powershell
+docker build -t underwater-app .
+docker run --rm -p 7860:7860 -e PORT=7860 underwater-app
 ```
 
-### **Docker Deployment** (Coming Soon)
-```bash
-docker build -t underwater-detection-pro .
-docker run -p 7860:7860 underwater-detection-pro
-```
+### Hugging Face Spaces
+- Space type: Gradio
+- App file: `app_simple_professional.py`
+- Requirements: use [requirements_professional.txt](requirements_professional.txt)
+- Environment: set `PORT` to 7860 (Spaces provides), the app reads it automatically.
 
-## 📈 Performance Benchmarks
+### Notes
+- The app reads `PORT`, `SERVER_NAME`, and `GRADIO_SHARE` from environment and defaults to `0.0.0.0:7860`.
+- If custom trained models are not present at `../yolov8*/runs/...`, it will fall back to [yolov8n.pt](yolov8n.pt) and [yolov8s.pt](yolov8s.pt).
 
-| Model | Inference Time | FPS | mAP@0.5 | Parameters |
-|-------|---------------|-----|---------|------------|
-| YOLOv8n | ~45ms | 22 FPS | 0.86 | 3.2M |
-| YOLOv8s | ~65ms | 15 FPS | 0.89 | 11.2M |
+## Performance
 
-if your computer/laptop didn't have GPU , you may use CPU for this.
-But, your accuray is too low.
+- **YOLOv8n**: ~45 FPS on RTX 3080
+- **YOLOv8s**: ~30 FPS on RTX 3080
+- **Accuracy**: mAP@0.5: 0.86 (YOLOv8s)
 
-*Benchmarks on RTX 3080, varies by hardware*
+## Contributing
 
-##  Export & Reporting Features
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### **Detection Data Export**
-- **JSON**: Complete detection data with metadata
-- **CSV**: Tabular format for analysis
-- **HTML**: Professional formatted reports
+## License
 
-### **Professional Reports**
-- Session analytics and statistics
-- Model performance comparisons  
-- Detection distribution charts
-- System performance metrics
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### **Export Example**
-```python
-# Export detection results
-python -c "
-from professional_utils import analytics
-analytics.export_to_csv('my_detections.csv')
-"
-```
+## Acknowledgments
 
-##  Advanced Features
+- [Ultralytics](https://github.com/ultralytics/ultralytics) for YOLOv8 implementation
+- [Gradio](https://gradio.app/) for the web interface framework
+- [COCO Dataset](https://cocodataset.org/) for pre-trained model weights
 
-### **System Diagnostics**
-```bash
-# Run comprehensive system check
-python launch_professional.py --professional --skip-checks
-```
+## Contact
 
-### **Performance Monitoring**
-- Real-time inference timing
-- Memory usage tracking
-- GPU utilization monitoring
-- Detection accuracy metrics
-
-### **Professional Logging**
-- Structured logging with timestamps
-- Performance metrics logging
-- Error tracking and debugging
-- Session activity logs
-
-##  API Integration (Future Release)
-
-```python
-# Professional API endpoint (planned)
-import requests
-
-response = requests.post('http://localhost:7860/api/detect', 
-                        files={'image': open('underwater.jpg', 'rb')},
-                        data={'model': 'YOLOv8s', 'confidence': 0.25})
-
-results = response.json()
-```
-
-##  Contributing
-
-We welcome contributions to enhance the professional features:
-
-1. **Fork the repository**
-2. **Create feature branch** (`git checkout -b feature/ProfessionalFeature`)
-3. **Add professional enhancements**
-4. **Submit pull request**
-
-### **Development Guidelines**
-- Follow PEP 8 style guidelines
-- Add comprehensive documentation
-- Include unit tests for new features
-- Maintain backward compatibility
-
-##  License & Credits
-
-### **License**
-This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
-
-### **Acknowledgments**
-- [Ultralytics](https://github.com/ultralytics/ultralytics) - YOLOv8 implementation
-- [Gradio](https://gradio.app/) - Professional web interface framework
-- [Plotly](https://plotly.com/) - Advanced visualization library
-- Marine research community for dataset contributions
-
-##  Professional Support
-
-For enterprise support, custom training, or professional consulting:
-
-- **Technical Support**: Create an issue on GitHub
-- **Enterprise Solutions**: Contact for custom implementations
-- **Training Services**: Custom model training available
-- **Integration Support**: API and system integration assistance
+For questions or support, please open an issue on GitHub.
 
 ---
 
-**🐬 Built for Marine Research & Conservation** | **🚀 Production-Ready AI Solution** | **📊 Professional Analytics Platform**
-
-
-
+**Made with for underwater research and marine conservation** 
