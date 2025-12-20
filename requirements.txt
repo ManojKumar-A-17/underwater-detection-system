@@ -1,5 +1,10 @@
-gradio
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch
+torchvision
 ultralytics
-opencv-python
-Pillow
-torch>=2.0.0 
+gradio
+opencv-python-headless
+numpy
+pillow
+plotly
