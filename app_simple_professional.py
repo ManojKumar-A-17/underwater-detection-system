@@ -10,10 +10,25 @@ import pandas as pd
 from datetime import datetime
 import plotly.graph_objects as go
 
-# Model paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def _resolve_weight_path(val: str) -> str:
+    """Resolve a weight path: support http(s) URLs, absolute paths, or repo-relative paths."""
+    if not val:
+        return val
+    if val.startswith("http://") or val.startswith("https://"):
+        return val
+    # If not absolute, make it relative to this file
+    if not os.path.isabs(val):
+        return os.path.join(BASE_DIR, val)
+    return val
+
+# Model paths (env overrides first). Defaults to files beside this script.
+_w_n = os.getenv("YOLOV8N_WEIGHTS", "best8n.pt")
+_w_s = os.getenv("YOLOV8S_WEIGHTS", "best8s.pt")
 MODEL_PATHS = {
-    "YOLOv8n": "../yolov8n/runs/detect_train/weights/best.pt",
-    "YOLOv8s": "../yolov8s/runs/detect_train/weights/best.pt"
+    "YOLOv8n": _resolve_weight_path(_w_n),
+    "YOLOv8s": _resolve_weight_path(_w_s),
 }
 
 # Load models
@@ -21,22 +36,23 @@ models = {}
 available_models = []
 
 for model_name, model_path in MODEL_PATHS.items():
-    if os.path.exists(model_path):
-        try:
+    try:
+        _is_remote = isinstance(model_path, str) and (model_path.startswith("http://") or model_path.startswith("https://"))
+        if _is_remote or os.path.exists(model_path):
             models[model_name] = YOLO(model_path)
             available_models.append(model_name)
-            print(f" Loaded {model_name} model: {model_path}")
-        except Exception as e:
-            print(f" Failed to load {model_name} model: {e}")
-    else:
-        print(f" {model_name} model not found: {model_path}")
+            print(f"✅ Loaded {model_name} model: {model_path}")
+        else:
+            print(f"⚠️ {model_name} model not found at: {model_path}")
+    except Exception as e:
+        print(f"❌ Failed to load {model_name} model from {model_path}: {e}")
 
 # Fallback to default model if no custom models found
 if not available_models:
     models["YOLOv8n"] = YOLO("yolov8n.pt")
     models["YOLOv8s"] = YOLO("yolov8s.pt")
     available_models = ["YOLOv8n", "YOLOv8s"]
-    print(" Using default YOLO models")
+    print("⚠️ Using default YOLO models")
 
 # Underwater object classes
 UNDERWATER_CLASSES = ['fish', 'jellyfish', 'penguin', 'puffin', 'shark', 'starfish', 'stingray']
@@ -130,16 +146,16 @@ def create_detection_summary(detection_data, model_name, inference_time):
         class_counts[class_name] = class_counts.get(class_name, 0) + 1
     
     # Create summary
-    summary = f"##  Detection Summary\n"
+    summary = f"## 🎯 Detection Summary\n"
     summary += f"**Model Used:** {model_name}\n"
     summary += f"**Inference Time:** {inference_time:.2f}s\n"
     summary += f"**Total Objects:** {total_detections}\n"
     summary += f"**Average Confidence:** {avg_confidence:.2f}\n\n"
     
-    summary += "###  Detected Objects:\n"
+    summary += "### 📊 Detected Objects:\n"
     for class_name, count in class_counts.items():
-        emoji = {"fish":  "jellyfish": , "penguin": , 
-                "puffin": , "shark": , "starfish": , "stingray": }.get(class_name, "🔹")
+        emoji = {"fish": "🐠", "jellyfish": "🪼", "penguin": "🐧", 
+                "puffin": "🦅", "shark": "🦈", "starfish": "⭐", "stingray": "🐙"}.get(class_name, "🔹")
         summary += f"{emoji} **{class_name.capitalize()}:** {count}\n"
     
     return summary
@@ -178,10 +194,10 @@ def create_detection_chart(detection_data):
 def detect_objects(image, model_choice, confidence_threshold=0.25, iou_threshold=0.45):
     """Object detection with enhanced features"""
     if image is None:
-        return None, "Please upload an image", None, ""
+        return None, "Please upload an image", ""
     
     if model_choice not in models:
-        return None, f"Model {model_choice} not available", None, ""
+        return None, f"Model {model_choice} not available", ""
     
     # Start timing
     start_time = time.time()
@@ -530,6 +546,13 @@ footer {
 }
 """
 
+# Extra CSS applied at launch (global so __main__ can access it)
+EXTRA_CSS = (
+    AQUATIC_CSS
+    + "\n.full-cover-image img, .full-cover-image canvas { object-fit: contain !important; width: 100% !important; height: 100% !important; background: #101c2c !important; }\n"
+    + ".full-cover-image { padding: 0 !important; margin: 0 !important; background: #101c2c !important; }\n"
+)
+
 def build_app():
     """Build the underwater detection application"""
     
@@ -539,7 +562,7 @@ def build_app():
             secondary_hue="slate",
             neutral_hue="gray"
         ),
-        css=AQUATIC_CSS + "\n.full-cover-image img, .full-cover-image canvas { object-fit: contain !important; width: 100% !important; height: 100% !important; background: #101c2c !important; }\n.full-cover-image { padding: 0 !important; margin: 0 !important; background: #101c2c !important; }\n" ,
+        css=EXTRA_CSS,
         title="🐬 Underwater Object Detection System"
     ) as demo:
         
@@ -558,28 +581,28 @@ def build_app():
             <div class="bubble"></div>
             
             <div class="header-section">
-                <h1> Underwater Object Detection System</h1>
-                <p> Advanced AI-powered detection for marine life identification using state-of-the-art YOLOv8 models 🌊</p>
+                <h1>🐬 Underwater Object Detection System</h1>
+                <p>🌊 Advanced AI-powered detection for marine life identification using state-of-the-art YOLOv8 models 🌊</p>
                 <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap;">
                     <div class="stats-card">
-                        <h3> 7</h3>
+                        <h3>🐠 7</h3>
                         <p>Marine Species</p>
                     </div>
                     <div class="stats-card">
-                        <h3> 2</h3>
+                        <h3>🤖 2</h3>
                         <p>AI Models</p>
                     </div>
                     <div class="stats-card">
-                        <h3> Real-time</h3>
+                        <h3>⚡ Real-time</h3>
                         <p>Detection</p>
                     </div>
                     <div class="stats-card">
-                        <h3> Advanced</h3>
+                        <h3>🎯 Advanced</h3>
                         <p>Analytics</p>
                     </div>
                 </div>
                 <div style="margin-top: 0.8rem; font-size: 1em; opacity: 0.9;">
-                     Jellyfish •  Penguin •  Puffin •  Shark •  Starfish •  Stingray 
+                    🪼 Jellyfish • 🐧 Penguin • 🦅 Puffin • 🦈 Shark • ⭐ Starfish • 🐙 Stingray 🪼
                 </div>
             </div>
             """)
@@ -597,7 +620,7 @@ def build_app():
             """)
         
         # Model Information Section with Aquatic Theme - Below Title Card
-        with gr.Accordion(" Model Information & Aquatic System Details", open=False):
+        with gr.Accordion("🌊 Model Information & Aquatic System Details", open=False):
             gr.HTML("""
             <div style="background: linear-gradient(135deg, rgba(30,60,114,0.2), rgba(76,161,175,0.2)); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(30,60,114,0.3); color: #e0e6ed;">
                 <h3 style="color: #4ca1af; margin-bottom: 1rem;">🤖 Available AI Models:</h3>
@@ -613,51 +636,51 @@ def build_app():
             
             gr.HTML("""
                 </div>
-                <h3 style="color: #4ca1af; margin-bottom: 1rem;"> Supported Marine Species:</h3>
+                <h3 style="color: #4ca1af; margin-bottom: 1rem;">🎯 Supported Marine Species:</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
                     <div style="background: rgba(255,107,107,0.2); padding: 1rem; border-radius: 10px; text-align: center; border: 2px solid rgba(255,107,107,0.4);">
-                        <div style="font-size: 2em;"></div>
+                        <div style="font-size: 2em;">🐠</div>
                         <strong style="color: #FF6B6B;">Fish</strong>
                     </div>
                     <div style="background: rgba(78,205,196,0.2); padding: 1rem; border-radius: 10px; text-align: center; border: 2px solid rgba(78,205,196,0.4);">
-                        <div style="font-size: 2em;"></div>
+                        <div style="font-size: 2em;">🪼</div>
                         <strong style="color: #4ECDC4;">Jellyfish</strong>
                     </div>
                     <div style="background: rgba(69,183,209,0.2); padding: 1rem; border-radius: 10px; text-align: center; border: 2px solid rgba(69,183,209,0.4);">
-                        <div style="font-size: 2em;"></div>
+                        <div style="font-size: 2em;">🐧</div>
                         <strong style="color: #45B7D1;">Penguin</strong>
                     </div>
                     <div style="background: rgba(150,206,180,0.2); padding: 1rem; border-radius: 10px; text-align: center; border: 2px solid rgba(150,206,180,0.4);">
-                        <div style="font-size: 2em;"></div>
+                        <div style="font-size: 2em;">🦅</div>
                         <strong style="color: #96CEB4;">Puffin</strong>
                     </div>
                     <div style="background: rgba(254,202,87,0.2); padding: 1rem; border-radius: 10px; text-align: center; border: 2px solid rgba(254,202,87,0.4);">
-                        <div style="font-size: 2em;"></div>
+                        <div style="font-size: 2em;">🦈</div>
                         <strong style="color: #FECA57;">Shark</strong>
                     </div>
                     <div style="background: rgba(255,159,243,0.2); padding: 1rem; border-radius: 10px; text-align: center; border: 2px solid rgba(255,159,243,0.4);">
-                        <div style="font-size: 2em;"></div>
+                        <div style="font-size: 2em;">⭐</div>
                         <strong style="color: #FF9FF3;">Starfish</strong>
                     </div>
                     <div style="background: rgba(84,160,255,0.2); padding: 1rem; border-radius: 10px; text-align: center; border: 2px solid rgba(84,160,255,0.4);">
-                        <div style="font-size: 2em;"></div>
+                        <div style="font-size: 2em;">🐙</div>
                         <strong style="color: #54A0FF;">Stingray</strong>
                     </div>
                 </div>
                 
-                <h3 style="color: #4ca1af; margin-bottom: 1rem;"> System Specifications:</h3>
+                <h3 style="color: #4ca1af; margin-bottom: 1rem;">⚙️ System Specifications:</h3>
                 <div style="background: rgba(35, 45, 55, 0.8); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(30,60,114,0.4); color: #e0e6ed;">
                     <ul style="list-style: none; padding: 0; margin: 0;">
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76,161,175,0.3);"><strong style="color: #4ca1af;"> Framework:</strong> YOLOv8 (Ultralytics) - State-of-the-art object detection</li>
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76,161,175,0.3);"><strong style="color: #4ca1af;"> Input:</strong> RGB Images (any resolution) - Optimized for underwater conditions</li>
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76,161,175,0.3);"><strong style="color: #4ca1af;"> Output:</strong> Bounding boxes with confidence scores and species classification</li>
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76,161,175,0.3);"><strong style="color: #4ca1af;"> Performance:</strong> Real-time detection capability with advanced analytics</li>
-                        <li style="padding: 0.5rem 0;"><strong style="color: #4ca1af;"> Specialization:</strong> Marine environment optimized for underwater research</li>
+                        <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76,161,175,0.3);"><strong style="color: #4ca1af;">🔧 Framework:</strong> YOLOv8 (Ultralytics) - State-of-the-art object detection</li>
+                        <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76,161,175,0.3);"><strong style="color: #4ca1af;">📸 Input:</strong> RGB Images (any resolution) - Optimized for underwater conditions</li>
+                        <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76,161,175,0.3);"><strong style="color: #4ca1af;">🎯 Output:</strong> Bounding boxes with confidence scores and species classification</li>
+                        <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76,161,175,0.3);"><strong style="color: #4ca1af;">⚡ Performance:</strong> Real-time detection capability with advanced analytics</li>
+                        <li style="padding: 0.5rem 0;"><strong style="color: #4ca1af;">🌊 Specialization:</strong> Marine environment optimized for underwater research</li>
                     </ul>
                 </div>
                 
                 <div style="text-align: center; margin-top: 1.5rem; padding: 1rem; background: linear-gradient(90deg, rgba(30,60,114,0.3), rgba(76,161,175,0.3), rgba(30,60,114,0.3)); border-radius: 10px;">
-                    <span style="color: #4ca1af; font-weight: 600; font-size: 1.1em;"> Built for Marine Research & Conservation </span>
+                    <span style="color: #4ca1af; font-weight: 600; font-size: 1.1em;">🐬 Built for Marine Research & Conservation 🌊</span>
                 </div>
             </div>
             """)
@@ -665,13 +688,13 @@ def build_app():
         # Main Interface with Tabs
         with gr.Tabs() as main_tabs:
             # Home Tab
-            with gr.Tab(" Home"):
+            with gr.Tab("🏠 Home"):
                 with gr.Row():
                     # Left Panel - Welcome Content (same scale as Detection Controls)
                     with gr.Column(scale=1, elem_classes="control-panel"):
                         gr.HTML("""
                         <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(30,60,114,0.1), rgba(76,161,175,0.1)); border-radius: 15px; margin: 0.5rem 0;">
-                            <h2 style="color: #4ca1af; margin-bottom: 1rem;"> Welcome to Underwater Detection</h2>
+                            <h2 style="color: #4ca1af; margin-bottom: 1rem;">🌊 Welcome to Underwater Detection</h2>
                             <p style="color: #e0e6ed; font-size: 1em; line-height: 1.6;">
                                 Experience cutting-edge AI technology for marine life identification. Our system uses advanced YOLOv8 models 
                                 trained specifically for underwater environments to detect and classify marine species with high accuracy.
@@ -679,17 +702,17 @@ def build_app():
                             <div style="margin: 1.5rem 0;">
                                 <div style="display: grid; grid-template-columns: 1fr; gap: 0.8rem; margin: 1rem 0;">
                                     <div style="background: rgba(30,40,50,0.8); padding: 1rem; border-radius: 12px; border: 2px solid rgba(76,161,175,0.3);">
-                                        <div style="font-size: 2em; margin-bottom: 0.3rem;"></div>
+                                        <div style="font-size: 2em; margin-bottom: 0.3rem;">🤖</div>
                                         <h3 style="color: #4ca1af; margin-bottom: 0.3rem; font-size: 1.1em;">AI-Powered</h3>
                                         <p style="color: #a8c8ec; font-size: 0.9em;">Advanced neural networks for precise detection</p>
                                     </div>
                                     <div style="background: rgba(30,40,50,0.8); padding: 1rem; border-radius: 12px; border: 2px solid rgba(76,161,175,0.3);">
-                                        <div style="font-size: 2em; margin-bottom: 0.3rem;"></div>
+                                        <div style="font-size: 2em; margin-bottom: 0.3rem;">🌊</div>
                                         <h3 style="color: #4ca1af; margin-bottom: 0.3rem; font-size: 1.1em;">Marine Specialized</h3>
                                         <p style="color: #a8c8ec; font-size: 0.9em;">Optimized for underwater environments</p>
                                     </div>
                                     <div style="background: rgba(30,40,50,0.8); padding: 1rem; border-radius: 12px; border: 2px solid rgba(76,161,175,0.3);">
-                                        <div style="font-size: 2em; margin-bottom: 0.3rem;"></div>
+                                        <div style="font-size: 2em; margin-bottom: 0.3rem;">📊</div>
                                         <h3 style="color: #4ca1af; margin-bottom: 0.3rem; font-size: 1.1em;">Advanced Analytics</h3>
                                         <p style="color: #a8c8ec; font-size: 0.9em;">Comprehensive reporting and insights</p>
                                     </div>
@@ -700,44 +723,64 @@ def build_app():
                         
                         # Go to Detect Button
                         go_to_detect_btn = gr.Button(
-                            "Go to Detection System",
+                            "🚀 Go to Detection System",
                             variant="primary",
                             elem_classes="primary-button",
                             size="lg"
+                        )
+                        # Make the button switch to the Detection tab
+                        go_to_detect_btn.click(
+                            fn=None,
+                            inputs=None,
+                            outputs=None,
+                            js="""
+                            () => {
+                                // Try to find the tab button by its label and click it
+                                const tabButtons = Array.from(document.querySelectorAll('.tab-nav button'));
+                                let target = tabButtons.find(b => (b.textContent || '').includes('Detection System'));
+                                if (!target) {
+                                    const allButtons = Array.from(document.querySelectorAll('button'));
+                                    target = allButtons.find(b => (b.textContent || '').includes('Detection System'));
+                                }
+                                if (target) {
+                                    target.click();
+                                }
+                            }
+                            """
                         )
                     
                     # Right Panel - Species List (same scale as Detection Results)
                     with gr.Column(scale=2, elem_classes="detection-panel"):
                         gr.HTML("""
                         <div style="padding: 1rem;">
-                            <h3 style="color: #4ca1af; margin-bottom: 1.5rem; text-align: center;"> Supported Marine Species</h3>
+                            <h3 style="color: #4ca1af; margin-bottom: 1.5rem; text-align: center;">🐠 Supported Marine Species</h3>
                             <div style="display: flex; flex-direction: column; gap: 1rem;">
                                 <div style="display: flex; align-items: center; gap: 1rem; padding: 0.8rem; background: rgba(255,107,107,0.1); border-radius: 8px; border-left: 4px solid #FF6B6B;">
-                                    <span style="font-size: 1.5em;"></span>
+                                    <span style="font-size: 1.5em;">🐠</span>
                                     <span style="color: #FF6B6B; font-weight: 600;">Fish</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 1rem; padding: 0.8rem; background: rgba(78,205,196,0.1); border-radius: 8px; border-left: 4px solid #4ECDC4;">
-                                    <span style="font-size: 1.5em;"></span>
+                                    <span style="font-size: 1.5em;">🪼</span>
                                     <span style="color: #4ECDC4; font-weight: 600;">Jellyfish</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 1rem; padding: 0.8rem; background: rgba(69,183,209,0.1); border-radius: 8px; border-left: 4px solid #45B7D1;">
-                                    <span style="font-size: 1.5em;"></span>
+                                    <span style="font-size: 1.5em;">🐧</span>
                                     <span style="color: #45B7D1; font-weight: 600;">Penguin</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 1rem; padding: 0.8rem; background: rgba(150,206,180,0.1); border-radius: 8px; border-left: 4px solid #96CEB4;">
-                                    <span style="font-size: 1.5em;"></span>
+                                    <span style="font-size: 1.5em;">🦅</span>
                                     <span style="color: #96CEB4; font-weight: 600;">Puffin</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 1rem; padding: 0.8rem; background: rgba(254,202,87,0.1); border-radius: 8px; border-left: 4px solid #FECA57;">
-                                    <span style="font-size: 1.5em;"></span>
+                                    <span style="font-size: 1.5em;">🦈</span>
                                     <span style="color: #FECA57; font-weight: 600;">Shark</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 1rem; padding: 0.8rem; background: rgba(255,159,243,0.1); border-radius: 8px; border-left: 4px solid #FF9FF3;">
-                                    <span style="font-size: 1.5em;"></span>
+                                    <span style="font-size: 1.5em;">⭐</span>
                                     <span style="color: #FF9FF3; font-weight: 600;">Starfish</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 1rem; padding: 0.8rem; background: rgba(84,160,255,0.1); border-radius: 8px; border-left: 4px solid #54A0FF;">
-                                    <span style="font-size: 1.5em;"></span>
+                                    <span style="font-size: 1.5em;">🐙</span>
                                     <span style="color: #54A0FF; font-weight: 600;">Stingray</span>
                                 </div>
                             </div>
@@ -745,13 +788,13 @@ def build_app():
                         """)
             
             # Detection Tab
-            with gr.Tab(" Detection System"):
+            with gr.Tab("🔍 Detection System"):
                 with gr.Row():
                     # Left column: Upload + controls
                     with gr.Column(scale=1):
                         gr.HTML("""
                         <div style="background: linear-gradient(45deg, #1976d2, #4285f4); color: white; padding: 0.8rem; border-radius: 8px 8px 0 0; text-align: center; font-weight: 600; margin-bottom: 0;">
-                             Upload Underwater Image
+                            🖼️ Upload Underwater Image
                         </div>
                         """)
                         image_input = gr.Image(
@@ -761,8 +804,6 @@ def build_app():
                             height=700,
                             show_label=False,
                             container=False,
-                            show_download_button=False,
-                            show_share_button=False,
                             elem_classes=["full-cover-image"]
                         )
                         # Controls below image
@@ -792,7 +833,7 @@ def build_app():
                     with gr.Column(scale=1):
                         gr.HTML("""
                         <div style="background: linear-gradient(45deg, #4285f4, #1976d2); color: white; padding: 0.8rem; border-radius: 8px 8px 0 0; text-align: center; font-weight: 600; margin-bottom: 0;">
-                             Detection Results
+                            🎯 Detection Results
                         </div>
                         """)
                         output_image = gr.Image(
@@ -802,8 +843,6 @@ def build_app():
                             height=700,
                             show_label=False,
                             container=False,
-                            show_download_button=False,
-                            show_share_button=False,
                             elem_classes=["full-cover-image"]
                         )
                         # Detected objects below result image
@@ -821,11 +860,24 @@ def build_app():
 if __name__ == "__main__":
     print("🐬 Starting Underwater Detection System...")
     app = build_app()
-    app.launch(
-        server_name="127.0.0.1",
-        server_port=1041,
-        share=False,
+    # Read host/port/share from environment for deployment
+    import os as _os
+    # Choose bind address: Render needs 0.0.0.0, local prefers 127.0.0.1
+    _port = int(_os.getenv("PORT", "7860"))
+    _is_render = bool(_os.getenv("RENDER") or _os.getenv("RENDER_SERVICE_ID") or (_os.getenv("PORT") and _os.getenv("PORT") != "7860"))
+    if _os.getenv("SERVER_NAME"):
+        _server_name = _os.getenv("SERVER_NAME")
+    else:
+        _server_name = "0.0.0.0" if _is_render else "127.0.0.1"
+    _share = _os.getenv("GRADIO_SHARE", "false").lower() == "true"
+    import inspect as _inspect
+    _sig = _inspect.signature(app.launch)
+    _kwargs = dict(
+        server_name=_server_name,
+        server_port=_port,
+        share=_share,
         show_error=True,
-        quiet=False
+        quiet=False,
     )
-
+    # Theme and CSS are already applied in Blocks; avoid passing in launch
+    app.launch(**_kwargs)
