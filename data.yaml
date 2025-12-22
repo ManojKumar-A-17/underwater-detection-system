@@ -1,5 +1,4 @@
-train: ../train/images
-val: ../valid/images
-
+train: ../train/images # take the images from any open sources
+val: ../valid/images # take the images from any open sources
 nc: 7
 names: ['fish', 'jellyfish', 'penguin', 'puffin', 'shark', 'starfish', 'stingray']
